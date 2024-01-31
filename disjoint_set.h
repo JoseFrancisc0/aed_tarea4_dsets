@@ -11,13 +11,14 @@ class Disjoint_Set{
         virtual ~Disjoint_Set();
 };
 
-class Disjoint_SetArray: public Disjoint_Set{
+class DisjointSetArray: public Disjoint_Set{
     private:
-        int parent[100];
-        int rank[100];
+        static const int MAX_SIZE = 100;
+        int parent[MAX_SIZE];
+        int rank[MAX_SIZE];
     public:
-        Disjoint_SetArray(){
-            for(int i = 0; i < 100; i++){
+        DisjointSetArray(){
+            for(int i = 0; i < MAX_SIZE; i++){
                 parent[i] = 0;
                 rank[i] = 0;
             }
@@ -49,12 +50,17 @@ class Disjoint_SetArray: public Disjoint_Set{
             }
         }
 
-        bool isConected(int x, int y) override;
+        bool isConected(int x, int y) override{
+            return Find(x) == Find(y);
+        }
 
-        ~Disjoint_SetArray() override = default;
+        ~DisjointSetArray() override = default;
 };
 
+template<typename T>
 class Disjoint_SetTree: public Disjoint_Set{
+    private:
+        // Define the structures
     public:
         Disjoint_SetTree();
 
