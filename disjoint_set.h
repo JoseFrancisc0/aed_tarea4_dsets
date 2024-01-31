@@ -1,6 +1,9 @@
 #ifndef DISJOINT_SET_H
 #define DISJOINT_SET_H
 
+#include <vector>
+using namespace std;
+
 class Disjoint_Set{
     public:
         virtual void MakeSet(int x) = 0;
@@ -57,19 +60,52 @@ class DisjointSetArray: public Disjoint_Set{
         ~DisjointSetArray() override = default;
 };
 
-template<typename T>
-class Disjoint_SetTree: public Disjoint_Set{
+class DisjointSetTree: public Disjoint_Set{
     private:
-        // Define the structures
+        struct Node{
+            int parent;
+            int rank;
+        };
+
+        vector<Node> nodes;
+
     public:
-        Disjoint_SetTree();
+        DisjointSetTree(){};
 
-        void MakeSet(int x) override;
-        int Find(int x) override;
-        void Union(int x, int y) override;
-        bool isConected(int x, int y) override;
+        void MakeSet(int x) override{
+            if(x >= nodes.size())
+                nodes.resize(x + 1);
 
-        ~Disjoint_SetTree() override;
+            nodes[x].parent = x;
+            nodes[x].rank = 0;
+        }
+
+        int Find(int x) override{
+            if(nodes[x].parent == x)
+                return x;
+            else
+                return Find(nodes[x].parent);
+        }
+
+        void Union(int x, int y) override{
+            int xRoot = Find(x);
+            int yRoot = Find(y);
+
+            if(nodes[xRoot].parent < nodes[yRoot].parent)
+                nodes[xRoot].parent = yRoot;
+            else if(nodes[xRoot].parent > nodes[yRoot].parent)
+                nodes[yRoot].parent = xRoot;
+            else{
+                nodes[yRoot].parent = xRoot;
+                nodes[xRoot].rank++;
+            }
+        }
+
+        bool isConected(int x, int y) override{
+            return Find(x) == Find(y);
+        }
+
+        ~DisjointSetTree() override = default;
 };
 
 #endif //DISJOINT_SET_H
