@@ -10,8 +10,6 @@ class Disjoint_Set{
         virtual int Find(int x) = 0;
         virtual void Union(int x, int y) = 0;
         virtual bool isConected(int x, int y) = 0;
-
-        virtual ~Disjoint_Set();
 };
 
 class DisjointSetArray: public Disjoint_Set{
@@ -56,8 +54,6 @@ class DisjointSetArray: public Disjoint_Set{
         bool isConected(int x, int y) override{
             return Find(x) == Find(y);
         }
-
-        ~DisjointSetArray() override = default;
 };
 
 class DisjointSetTree: public Disjoint_Set{
@@ -73,7 +69,9 @@ class DisjointSetTree: public Disjoint_Set{
         DisjointSetTree(){};
 
         void MakeSet(int x) override{
-            if(x >= nodes.size())
+            int v_size = nodes.size();
+
+            if(x >= v_size)
                 nodes.resize(x + 1);
 
             nodes[x].parent = x;
@@ -91,9 +89,9 @@ class DisjointSetTree: public Disjoint_Set{
             int xRoot = Find(x);
             int yRoot = Find(y);
 
-            if(nodes[xRoot].parent < nodes[yRoot].parent)
+            if(nodes[xRoot].rank < nodes[yRoot].rank)
                 nodes[xRoot].parent = yRoot;
-            else if(nodes[xRoot].parent > nodes[yRoot].parent)
+            else if(nodes[xRoot].rank > nodes[yRoot].rank)
                 nodes[yRoot].parent = xRoot;
             else{
                 nodes[yRoot].parent = xRoot;
@@ -104,8 +102,6 @@ class DisjointSetTree: public Disjoint_Set{
         bool isConected(int x, int y) override{
             return Find(x) == Find(y);
         }
-
-        ~DisjointSetTree() override = default;
 };
 
 #endif //DISJOINT_SET_H
